@@ -1,0 +1,178 @@
+####### Shortcut Hotkeys #############
+# open terminal
+ctrl - return : open -n /Applications/Alacritty.app
+
+# restart Yabi, SpaceBar, and SKHD
+ctrl + shift - r : yabai --restart-service; skhd --restart-service; terminal-notifier -sound default -message 'Restarted Yabai and SKHD'
+
+####### Application Blacklists #############
+#.blacklist [
+#  "IntelliJ IDEA"
+#]
+
+####### Window Management Hotkeys #############
+# change focus
+ctrl - h : yabai -m window --focus west
+ctrl - j : yabai -m window --focus south
+ctrl - k : yabai -m window --focus north
+ctrl - l : yabai -m window --focus east
+
+# cycle through stack windows
+ctrl - p : yabai -m window --focus stack.next || yabai -m window --focus south
+ctrl - n : yabai -m window --focus stack.prev || yabai -m window --focus north
+
+# forwards
+ctrl - k : yabai -m query --spaces --space \
+  | jq -re ".index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
+  | xargs -I{} yabai -m window --focus {}
+
+# backwards
+ctrl - j : yabai -m query --spaces --space \
+  | jq -re ".index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $array_length - 1 > $has_index then nth($has_index + 1).id else nth(0).id end' \
+  | xargs -I{} yabai -m window --focus {}
+
+# (alt) change focus (using arrow keys)
+ctrl - left  : yabai -m window --focus west
+ctrl - down  : yabai -m window --focus south
+ctrl - up    : yabai -m window --focus north
+ctrl - right : yabai -m window --focus east
+
+# shift window in current workspace
+ctrl + shift - h : yabai -m window --swap west || $(yabai -m window --display west; yabai -m display --focus west)
+ctrl + shift - j : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
+ctrl + shift - k : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
+ctrl + shift - l : yabai -m window --swap east || $(yabai -m window --display east; yabai -m display --focus east)
+# alternatively, use the arrow keys
+ctrl + shift - left : yabai -m window --swap west || $(yabai -m window --display west; yabai -m display --focus west)
+ctrl + shift - down : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
+ctrl + shift - up : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
+ctrl + shift - right : yabai -m window --swap east || $(yabai -m window --display east; yabai -m display --focus east)
+
+# set insertion point in focused container
+ctrl + alt - h : yabai -m window --insert west
+ctrl + alt - j : yabai -m window --insert south
+ctrl + alt - k : yabai -m window --insert north
+ctrl + alt - l : yabai -m window --insert east
+# (alt) set insertion point in focused container using arrows
+ctrl + alt - left  : yabai -m window --insert west
+ctrl + alt - down  : yabai -m window --insert south
+ctrl + alt - up    : yabai -m window --insert north
+ctrl + alt - right : yabai -m window --insert east
+
+# go back to previous workspace (kind of like back_and_forth in i3)
+ctrl - b : yabai -m space --focus recent
+
+ctrl - m : yabai -m display --focus prev
+
+# move focused window to previous workspace
+ctrl + shift - b : yabai -m window --space recent; \
+                  yabai -m space --focus recent
+
+# navigate workspaces next / previous using arrow keys
+# cmd - left  : yabai -m space --focus prev
+# cmd - right : yabai -m space --focus next
+
+# move focused window to next/prev workspace
+ctrl + shift - 1 : yabai -m window --space 1
+ctrl + shift - 2 : yabai -m window --space 2
+ctrl + shift - 3 : yabai -m window --space 3
+ctrl + shift - 4 : yabai -m window --space 4
+ctrl + shift - 5 : yabai -m window --space 5
+ctrl + shift - 6 : yabai -m window --space 6
+ctrl + shift - 7 : yabai -m window --space 7
+ctrl + shift - 8 : yabai -m window --space 8
+ctrl + shift - 9 : yabai -m window --space 9
+#ctrl + shift - 0 : yabai -m window --space 10
+
+# # rotate tree 
+
+ctrl - r : yabai -m space --rotate 90
+
+# # mirror tree y-axis
+ctrl + shift - y : yabai -m space --mirror y-axis
+
+# # mirror tree x-axis
+ctrl + shift - x : yabai -m space --mirror x-axis
+
+# balance size of windows
+ctrl + shift - 0 : yabai -m space --balance
+
+# increase window size
+ctrl + shift - a : yabai -m window --resize left:-20:0
+ctrl + shift - s : yabai -m window --resize bottom:0:20
+ctrl + shift - w : yabai -m window --resize top:0:-20
+ctrl + shift - d : yabai -m window --resize right:20:0
+
+# decrease window size
+cmd + shift - a : yabai -m window --resize left:20:0
+cmd + shift - s : yabai -m window --resize bottom:0:-20
+cmd + shift - w : yabai -m window --resize top:0:20
+cmd + shift - d : yabai -m window --resize right:-20:0
+
+# change layout of desktop
+ctrl + shift - e : yabai -m space --layout bsp
+ctrl + shift - s : yabai -m space --layout float
+ctrl - e : yabai -m space --layout bsp
+ctrl - s : yabai -m space --layout stack
+ctrl - f : yabai -m space --layout float
+
+# float / unfloat window and center on screen
+#ctrl - t : yabai -m window --toggle float;\
+#          yabai -m window --grid 4:4:1:1:2:2
+# float / unfloat window and leave in its current location
+ctrl + shift - space : yabai -m window --toggle float
+#ctrl + alt - space : yabai -m window --toggle float
+
+# make floating window fill screen
+ctrl + cmd - up     : yabai -m window --grid 1:1:0:0:1:1
+
+# make floating window fill left-half of screen
+ctrl + cmd - left   : yabai -m window --grid 1:2:0:0:1:1
+
+# make floating window fill right-half of screen
+ctrl + cmd - right  : yabai -m window --grid 1:2:1:0:1:1
+
+# create desktop, move window and follow focus
+ctrl + shift + cmd - n : yabai -m space --create;\
+                 index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')"; \
+                 yabai -m window --space "${index}";\
+                 yabai -m space --focus "${index}"
+
+# create desktop, move window and stay in current workspace
+ctrl + shift - n : yabai -m space --create;\
+                  index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')"; \
+                  yabai -m window --space "${index}"
+
+# create desktop and follow focus
+# Note: script fails when workspace is empty due to Yabai not reporting the workspace (bug?)
+#       best to use the create + move window command instead of creating a blank window
+ctrl - n : yabai -m space --create;\
+                  index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')"; \
+                  yabai -m space --focus "${index}"
+
+# destroy desktop
+ctrl + cmd - w : yabai -m space --destroy
+
+# toggle sticky
+ctrl + alt - s : yabai -m window --toggle sticky
+
+# enter fullscreen mode for the focused container
+ctrl - f : yabai -m window --toggle zoom-fullscreen
+
+# toggle window native fullscreen
+ctrl + shift - f : yabai -m window --toggle native-fullscreen
+
+# focus monitor
+ctrl + alt - x  : yabai -m display --focus recent
+ctrl + alt - z  : yabai -m display --focus prev
+ctrl + alt - c  : yabai -m display --focus next
+ctrl + alt - 1  : yabai -m display --focus 1
+ctrl + alt - 2  : yabai -m display --focus 2
+ctrl + alt - 3  : yabai -m display --focus 3
+
+# # fix hash
+# : osascript -e 'tell application "System Events" to keystroke "#"'

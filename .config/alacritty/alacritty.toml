@@ -1,0 +1,42 @@
+import = ["/Users/jakedavis/.alacritty-colorscheme/themes/ayu_dark.toml"]
+
+[colors.primary]
+background = "#000000"
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 13
+
+[font.normal]
+family = "JetBrainsMono Nerd Font Mono"
+
+[[keyboard.bindings]]
+chars = "#"
+key = "Key3"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bj"
+key = "J"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bk"
+key = "K"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bh"
+key = "H"
+mods = "Alt"
+
+[[keyboard.bindings]]
+chars = "\u001Bl"
+key = "L"
+mods = "Alt"
+
+[window]
+dynamic_title = true
+option_as_alt = "Both"
